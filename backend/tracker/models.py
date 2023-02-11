@@ -7,6 +7,8 @@ class StreetLight(models.Model):
     uptime = models.IntegerField(blank=True, null=True)
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(auto_now=True)
+    latitude = models.DecimalField(max_digits=4, decimal_places=3, null=True)
+    longitude = models.DecimalField(max_digits=4, decimal_places=3, null=True)
     
 class PolePower(models.Model):
     streetLight = models.ForeignKey(StreetLight,related_name="power", on_delete=models.CASCADE)
