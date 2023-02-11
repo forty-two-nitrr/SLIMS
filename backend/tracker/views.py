@@ -15,7 +15,13 @@ class LightsAPI(APIView):
         if id!=None:
             streetlight = StreetLight.objects.get(id=id)
             serializer = StreetLightSerializer(streetlight)
-        return Response({'data': serializer.data}, status=status.HTTP_200_OK)
+            return Response({'data': serializer.data}, status=status.HTTP_200_OK)
+        else :
+            streetlight = StreetLight.objects.all()
+            serializer = IntialStreetLightSerializer(streetlight, many=True)
+            return Response({'data': serializer.data}, status=status.HTTP_200_OK)
+            
+
 
     
     # to register poles 
