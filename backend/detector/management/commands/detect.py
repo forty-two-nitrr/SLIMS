@@ -4,32 +4,34 @@ import torch
 import requests
 import socket
 import base64
-import time
 
 DETECTED = True
+NOTDETECTED = False
 
-SOCKET_HOST = '192.168.246.97'
-SOCKET_PORT = 6969
+class Socket():
+
+    def __init__(self, host_ip, port):
+        self.BUFF_SIZE = 65536
+        self.server_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+        self.server_socket.setsockopt(socket.SOL_SOCKET,socket.SO_RCVBUF,self.BUFF_SIZE)
+        self.host_name = socket.gethostname()
+        self.host_ip = host_ip
+        self.port = port
+        self.socket_address = (host_ip,port)
+        self.server_socket.bind(self.socket_address)
+
 
 class Command(BaseCommand):
 
+    status = NOTDETECTED
+    socket = Socket('192.168.177.97', 6969)
 
     def handle(self, *args, **options):
-
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.bind((SOCKET_HOST, SOCKET_PORT))
-        s.listen()
-        conn, addr = s.accept()
-
-        url = "http://192.168.246.1"
-        status = not DETECTED
+        url = "http://192.168.177.1"
         model = torch.hub.load('ultralytics/yolov5', 'yolov5s')
         model.classes = list(range(10))
-        cap = cv2.VideoCapture(0)
-        # cap = cv2.VideoCapture(url + ":81/stream")
 
-        curr_time = time.time()
-
+        cap = cv2.VideoCapture(url + ":81/stream")
         if not cap.isOpened():
             print("Error")
             exit()
@@ -51,25 +53,21 @@ class Command(BaseCommand):
             cv2.imshow('frame', frame)
             
             if len(results.xyxy[0]) == 0:
-                if status == DETECTED and time.time() - curr_time > 5:
+                if status == DETECTED:
                     r = requests.get(url = url+'/toggle')
-                    curr_time = time.time()
-                    status = not DETECTED
+                    status = NOTDETECTED
             else:
-                if status == (not DETECTED) and time.time() - curr_time > 5:
+                if status == NOTDETECTED:
                     r = requests.get(url = url+'/toggle')
-                    curr_time = time.time()
                     status = DETECTED
             if cv2.waitKey(1) == ord('q'):
                 break
-            
-            _, encoded_img = cv2.imencode('.jpg', frame)
-            message = base64.b64encode(encoded_img)
-            conn.sendall(message) 
 
-        conn.close()
-
+            encoded,buffer = cv2.imencode('.jpg',frame,[cv2.IMWRITE_JPEG_QUALITY,80])
+            message = base64.b64encode(buffer)
+            socket.server_socket.sendto(message,client_addr)
+        
         cap.release()
         cv2.destroyAllWindows()
-        s.close()
+        socket.server_socket.close()
     
