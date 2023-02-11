@@ -1,0 +1,12 @@
+.map-container {
+  min-height: 98vh;
+  border: 2px solid white;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.map-inner-container {
+  border: 2px solid white;
+}
+.details-container {
+  border: 2px solid white;
+}
