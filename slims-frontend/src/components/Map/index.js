@@ -22,6 +22,24 @@ const Map = () => {
       zoom: zoom,
     });
     map.current.scrollZoom.disable();
+    const marker = new mapboxgl.Marker({ color: "red" })
+      .setLngLat([81.6049, 21.2494])
+      .setPopup(
+        new mapboxgl.Popup({ closeButton: false, closeOnClick: false }).setHTML(
+          `<h1 style="color:black">Hi</h1>`
+        )
+      )
+      .addTo(map.current);
+    marker.getElement().addEventListener("mouseenter", () => {
+      marker.togglePopup();
+    });
+    marker.getElement().addEventListener("mouseleave", () => {
+      marker.togglePopup();
+    });
+    // marker1.getElement().addEventListener("click", () => {
+    //   let temp = sensorObj[mark];
+    //   setGraphData(temp);
+    // });
   });
 
   useEffect(() => {
