@@ -15,4 +15,4 @@ class IntialStreetLightSerializer(serializers.ModelSerializer):
     # power = PolePowerSerializer(read_only = True, many = True)
     class Meta: 
         model = StreetLight
-        fields = ['id', 'longitude', 'latitude']
+        fields = ['id', 'longitude', 'latitude', 'status']
