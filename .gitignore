@@ -1,2 +1,6 @@
 .env
+<<<<<<< HEAD
 *.out
+=======
+**/__pycache__
+>>>>>>> 13eb83b36a72d2df46c841fe59b3dc8a9278511e
