@@ -2,11 +2,38 @@
   min-height: 98vh;
   border: 2px solid white;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 3fr 1fr;
 }
 .map-inner-container {
   border: 2px solid white;
+  margin: 50px 30px;
+  border-radius: 20px;
+  overflow: hidden;
 }
 .details-container {
   border: 2px solid white;
+  margin: 50px 30px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(2.1px);
+  -webkit-backdrop-filter: blur(2.1px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+.map {
+  height: 850px;
+}
+
+.sidebar {
+  background-color: rgba(35, 55, 75, 0.9);
+  color: #fff;
+  padding: 6px 12px;
+  font-family: monospace;
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 12px;
+  border-radius: 4px;
 }
