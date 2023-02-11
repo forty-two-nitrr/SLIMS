@@ -7,7 +7,12 @@ class PolePowerSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class StreetLightSerializer(serializers.ModelSerializer):
-    # power = PolePowerSerializer(read_only = True, many = True)
+    power = PolePowerSerializer(read_only = True, many = True)
     class Meta: 
         model = StreetLight
         fields = "__all__"
+class IntialStreetLightSerializer(serializers.ModelSerializer):
+    # power = PolePowerSerializer(read_only = True, many = True)
+    class Meta: 
+        model = StreetLight
+        fields = ['id', 'longitude', 'latitude', 'status']
