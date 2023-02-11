@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
-import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
-
+import mapboxgl from "mapbox-gl";
+import axios from "axios";
 import "./Map.css";
 
 mapboxgl.accessToken =
@@ -12,6 +12,14 @@ const Map = () => {
   const [lng, setLng] = useState(81.6049);
   const [lat, setLat] = useState(21.2494);
   const [zoom, setZoom] = useState(18);
+  const [locations, setLocations] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8000/tracker/lights/")
+      .then((res) => setLocations(res.data.data))
+      .catch((err) => console.log(err.response));
+  }, []);
 
   useEffect(() => {
     if (map.current) return; // initialize map only once
@@ -22,25 +30,31 @@ const Map = () => {
       zoom: zoom,
     });
     map.current.scrollZoom.disable();
-    const marker = new mapboxgl.Marker({ color: "red" })
-      .setLngLat([81.6049, 21.2494])
-      .setPopup(
-        new mapboxgl.Popup({ closeButton: false, closeOnClick: false }).setHTML(
-          `<h1 style="color:black">Hi</h1>`
-        )
-      )
-      .addTo(map.current);
-    marker.getElement().addEventListener("mouseenter", () => {
-      marker.togglePopup();
-    });
-    marker.getElement().addEventListener("mouseleave", () => {
-      marker.togglePopup();
-    });
-    // marker1.getElement().addEventListener("click", () => {
-    //   let temp = sensorObj[mark];
-    //   setGraphData(temp);
-    // });
   });
+
+  useEffect(() => {
+    console.log(locations);
+    locations.forEach((location) => {
+      const marker = new mapboxgl.Marker({ color: "red" })
+        .setLngLat([location.longitude, location.latitude])
+        .setPopup(
+          new mapboxgl.Popup({
+            closeButton: false,
+            closeOnClick: false,
+          }).setHTML(`<h1 style="color:black">${location.id}</h1>`)
+        )
+        .addTo(map.current);
+      marker.getElement().addEventListener("mouseenter", () => {
+        marker.togglePopup();
+      });
+      marker.getElement().addEventListener("mouseleave", () => {
+        marker.togglePopup();
+      });
+      marker.getElement().addEventListener("click", () => {
+        console.log(location.id);
+      });
+    });
+  }, [locations]);
 
   useEffect(() => {
     if (!map.current) return; // wait for map to initialize
