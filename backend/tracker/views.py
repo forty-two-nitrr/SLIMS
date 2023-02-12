@@ -29,11 +29,23 @@ class LightsAPI(APIView):
     # to register poles 
     def post(self, request):
         # check if data already exists
-        # id=request.data['id']
-        # streetlight = StreetLight.objects.get(id=id)
+        id=request.data['id']
+        streetlight = StreetLight.objects.get(id=id)
 
-        # if streetlight != None:
-        #     return Response({'message':'Data already exists'}, status=status.HTTP_400_BAD_REQUEST)
+        if streetlight != None:
+            streetlight.uptime = request.data['uptime']
+            streetlight.status = request.data['status']
+            streetlight.save()
+                    # send mail functionality
+            subject = f'Street light with id:{id} failed'
+            message = f'Warning: Streetlight having id number = {id} stopped working. Please Fix'
+            email_from = settings.EMAIL_HOST_USER
+            recipient_list = [settings.RECIPIENT_EMAIL]
+            print(request.data['status'])
+            if request.data['status']=='False':
+                send_mail( subject, message, email_from, recipient_list )
+                print('mail send successfully')
+            return Response({'message': 'Data updated successfully'}, status=status.HTTP_200_OK)
         
         serializer = StreetLightSerializer(data = request.data)
         if not serializer.is_valid():
@@ -45,25 +57,25 @@ class LightsAPI(APIView):
         return Response({'data': serializer.data, 'message': 'Data Saved Successfully'}, status=status.HTTP_201_CREATED)
     
     # update uptime and status 
-    def patch(self, request):
-        id=request.data['id']
-        streetlight = StreetLight.objects.get(id=id)
-        if streetlight == None:
-            return Response({'message':'Cannot update data does not exitst'}, status=status.HTTP_400_BAD_REQUEST)
-        streetlight.uptime = request.data['uptime']
-        streetlight.status = request.data['status']
-        streetlight.save()
+    # def update_orignal(request):
+    #     id=request.data['id']
+    #     streetlight = StreetLight.objects.get(id=id)
+    #     if streetlight == None:
+    #         return Response({'message':'Cannot update data does not exitst'}, status=status.HTTP_400_BAD_REQUEST)
+    #     streetlight.uptime = request.data['uptime']
+    #     streetlight.status = request.data['status']
+    #     streetlight.save()
         
-        # send mail functionality
-        subject = f'Street light with id:{id} failed'
-        message = f'Warning: Streetlight having id number = {id} stopped working. Please Fix'
-        email_from = settings.EMAIL_HOST_USER
-        recipient_list = [settings.RECIPIENT_EMAIL]
-        print(request.data['status'])
-        if request.data['status']=='False':
-            send_mail( subject, message, email_from, recipient_list )
-            print('mail send successfully')
-        return Response({'message': 'Data updated successfully'}, status=status.HTTP_200_OK)
+    #     # send mail functionality
+    #     subject = f'Street light with id:{id} failed'
+    #     message = f'Warning: Streetlight having id number = {id} stopped working. Please Fix'
+    #     email_from = settings.EMAIL_HOST_USER
+    #     recipient_list = [settings.RECIPIENT_EMAIL]
+    #     print(request.data['status'])
+    #     if request.data['status']=='False':
+    #         send_mail( subject, message, email_from, recipient_list )
+    #         print('mail send successfully')
+    #     return Response({'message': 'Data updated successfully'}, status=status.HTTP_200_OK)
         
     
     
