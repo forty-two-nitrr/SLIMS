@@ -1,5 +1,5 @@
 import React from "react";
-import Typewriter from "typewriter-effect";
+// import Typewriter from "typewriter-effect";
 // import { Fade } from "react-awesome-reveal";
 // import Particles from "react-tsparticles";
 // import { loadFull } from "tsparticles";

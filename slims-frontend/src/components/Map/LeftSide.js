@@ -16,7 +16,7 @@ const LeftSide = ({ id }) => {
   useEffect(() => {
     if (id === 0) return;
     axios
-      .get("http://localhost:8000/tracker/lights/?id=" + id)
+      .get("http://192.168.201.97:8000/tracker/lights/?id=" + id)
       .then((res) => {
         setDetails(res.data.data);
         console.log(res.data.data);
@@ -63,7 +63,7 @@ const LeftSide = ({ id }) => {
             <Line type="monotone" dataKey="power" stroke="#8884d8" />
             {/* <CartesianGrid stroke="#ccc" strokeDasharray="5 5" /> */}
             <XAxis dataKey="time" stroke="#fff" />
-            <YAxis stroke="#fff" domain={[0, 500]} />
+            <YAxis stroke="#fff" domain={[0, 50]} />
             <Legend />
             <Tooltip />
           </LineChart>
