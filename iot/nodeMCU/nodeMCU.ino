@@ -9,7 +9,7 @@ const char* ssid = "Aditya Ray";
 const char* password = "ankuria98";
 
 //Your Domain name with URL path or IP address with path
-const char* serverName = "http://192.168.246.115:4000/api/esp";
+const char* serverName = "http://192.168.201.97:8000/tracker/poles";
 
 int d5 = 14, d6 = 12;
 SoftwareSerial s(d6,d5);
@@ -72,7 +72,7 @@ void setup() {
   while (!Serial) continue;
 }
 
-void loop() { // run over and over
+void loop() {
   while (Serial.available()) {
     StaticJsonBuffer<1000> jsonBuffer;
     JsonObject& root = jsonBuffer.parseObject(s);
@@ -83,8 +83,6 @@ void loop() { // run over and over
     data.id = root["id"];
     data.time = root["time"];
     data.status = root["status"];
-    
-    //Serial.write(Serial.read());
     
     rbNode *newHead = insertion(set, data);
     if (!newHead) {

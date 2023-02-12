@@ -1,15 +1,9 @@
-// Implementing Red-Black Tree in C
-
-//#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "rbt.h"
 
 
-//rbNode *root = NULL;
-
 static	int		compare_payload		(payload_t p1, payload_t p2);
-//static	void	itoa				(int i, char *a, int n);
 
 // Create a red-black tree
 rbNode *createNode(payload_t data) {
@@ -41,16 +35,10 @@ rbNode* insertion(rbNode *root, payload_t data) {
   while (ptr != NULL) {
 	  index = compare_payload(data, ptr->data);
 	  if (index == MEMORY_INSUFFICIENT) {
-		  //printf("dangern");
 		  return NULL;
 	  }
-/*     if (compare_payload(ptr->data, data) == 0) {
-//       printf("Duplicates Not Allowed!!\n");
-      return;
-    }
-//     index = (data - ptr->data) > 0 ? 1 : 0; */
+
 	  if (index == 0) {
-		  //printf("erooor\n");
 		  return root;
 	  }
 	  index = index < 0 ? 0 : 1;
@@ -60,7 +48,6 @@ rbNode* insertion(rbNode *root, payload_t data) {
   }
   stack[ht - 1]->link[index] = newnode = createNode(data);
   if (newnode == NULL) {
-	  //printf("dangerr\n");
 	  return NULL;
   }
   while ((ht >= 3) && (stack[ht - 1]->color == RED)) {
@@ -134,7 +121,6 @@ rbNode* deletion(rbNode *root, payload_t data) {
   nodeColor color;
 
   if (!root) {
-//     printf("Tree not available\n");
     return NULL;
   }
 
@@ -143,9 +129,6 @@ rbNode* deletion(rbNode *root, payload_t data) {
 	  diff = compare_payload(data, ptr->data);
 	  if (diff == MEMORY_INSUFFICIENT)
 		  return NULL;
-/*     if ((data - ptr->data) == 0)
-      break;
-    diff = (data - ptr->data) > 0 ? 1 : 0; */
 	  if (diff == 0)
 		  break;
 	  diff = diff < 0 ? 0: 1;
@@ -330,58 +313,6 @@ rbNode* deletion(rbNode *root, payload_t data) {
 }
 
 
-/* 
-// Print the inorder traversal of the tree
-void inorderTraversal(rbNode *node) {
-  if (node) {
-    inorderTraversal(node->link[0]);
-    printf("%d  ", node->data.id);
-    inorderTraversal(node->link[1]);
-  }
-  return;
-}
-
-
-// Driver code
-int main() {
-	rbNode *root = NULL;
-  int ch;
-  while (1) {
-    printf("1. Insertion\t2. Deletion\n");
-    printf("3. Traverse\t4. Exit");
-    printf("\nEnter your choice:");
-    scanf("%d", &ch);
-	payload_t data;
-	data.time = 99;
-	data.status = true;
-    switch (ch) {
-      case 1:
-        printf("Enter the element to insert:");
-        scanf("%d", &data.id);
-		root = insertion(root, data);
-        printf("result of insertion: %d\n", (root == NULL ? 0 : root->data.id));
-        break;
-      case 2:
-        printf("Enter the element to delete:");
-        scanf("%d", &data.id);
-        root = deletion(root, data);
-        break;
-      case 3:
-        inorderTraversal(root);
-        printf("\n");
-        break;
-      case 4:
-        exit(0);
-      default:
-        printf("Not available\n");
-        break;
-    }
-    printf("\n");
-  }
-  return 0;
-}
- */
-
 static int compare_payload (payload_t p1, payload_t p2) {
 	char *p1_id_s = (char *) malloc (69 * sizeof(char));
 	char *p1_time_s = (char *) malloc (33 * sizeof(char));
@@ -392,24 +323,15 @@ static int compare_payload (payload_t p1, payload_t p2) {
 	if (p1_id_s == NULL || p1_time_s == NULL || p2_id_s == NULL || p2_time_s == NULL)
 		return MEMORY_INSUFFICIENT;
 
-/* 	itoa(p1.id, p1_id_s, 10);
-	itoa(p1.time, p1_time_s, 10);
-	itoa(p2.id, p2_id_s, 10);
-	itoa(p2.time, p2_time_s, 10); */
-
 	p1_id_s = itoa(p1.id, p1_id_s, 10);
 	p1_time_s = itoa(p1.time, p1_time_s, 10);
 	p2_id_s = itoa(p2.id, p2_id_s, 10);
 	p2_time_s = itoa(p2.time, p2_time_s, 10);
 
-//	printf("p1id %s, p1time %s, p2id %s, p2time %s\n", p1_id_s, p1_time_s, p2_id_s, p2_time_s);
-
 	char *s1 = strncat(p1_id_s, p1_time_s, 33);
 	char *s2 = strncat(p2_id_s, p2_time_s, 33);
 
 	int result =  strncmp(s1, s2, 69);
-
-//	printf("%s - %s, result: %d\n", s1, s2, result);
 
 	free(p1_id_s);
 	free(p1_time_s);
@@ -418,21 +340,3 @@ static int compare_payload (payload_t p1, payload_t p2) {
 
 	return result;
 }
-
-
-// custom version where compiler doesn't recognise itoa, 'n' is not base it is max length of string 'a'.
-/* static void itoa (int i, char *a, int n) {
-	memset(a, 0, n*sizeof(char));
-
-	int d = 0;
-	while (i) {
-		a[d++] = (i%10)+'0';
-		i /= 10;
-	}
-
-	int s = 0, e = d-1;
-	while (s < e) {
-		swap(a[s], a[e]);
-		s++; e--;
-	}
-} */
