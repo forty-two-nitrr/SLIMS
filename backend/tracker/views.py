@@ -4,6 +4,8 @@ from .serializers import *
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.core.mail import send_mail
+from django.conf import settings
 
 # Create your views here.
 
@@ -51,6 +53,16 @@ class LightsAPI(APIView):
         streetlight.uptime = request.data['uptime']
         streetlight.status = request.data['status']
         streetlight.save()
+        
+        # send mail functionality
+        subject = f'Street light with id:{id} failed'
+        message = f'Warning: Streetlight having id number = {id} stopped working. Please Fix'
+        email_from = settings.EMAIL_HOST_USER
+        recipient_list = [settings.RECIPIENT_EMAIL]
+        print(request.data['status'])
+        if request.data['status']=='False':
+            send_mail( subject, message, email_from, recipient_list )
+            print('mail send successfully')
         return Response({'message': 'Data updated successfully'}, status=status.HTTP_200_OK)
         
     
