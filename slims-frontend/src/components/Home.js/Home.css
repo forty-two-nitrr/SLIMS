@@ -711,7 +711,7 @@ input#day-night:checked ~ .content .moon-sun {
 
 /*** WINDOWS ***/
 
-span {
+.span {
   background: linear-gradient(32deg, #fff0 17%, var(--luz2) 19%), var(--luz1);
   position: absolute;
   width: 20%;
@@ -720,8 +720,8 @@ span {
 }
 
 /* F 2 */
-.floor.two .side span:before,
-.floor.five .side span:before {
+.floor.two .side .span:before,
+.floor.five .side .span:before {
   content: "";
   position: absolute;
   width: calc(100% + 2px);
@@ -890,7 +890,7 @@ span {
   left: 40.75%;
 }
 
-.floor.five .side:nth-child(1) span:after {
+.floor.five .side:nth-child(1) .span:after {
   content: "";
   position: absolute;
   width: 2vmin;
@@ -952,7 +952,7 @@ span {
   background-size: 0.25vmin 100%, 8vmin 100%;
 }
 
-.floor.six .side span {
+.floor.six .side .span {
   left: 40.5%;
   width: 19%;
   background: #0a0a0a;
@@ -997,14 +997,14 @@ span {
 }
 
 /* F 2 */
-.floor.two .side:nth-of-type(3) span,
-.floor.four .side:nth-of-type(3) span {
+.floor.two .side:nth-of-type(3) .span,
+.floor.four .side:nth-of-type(3) .span {
   left: 71%;
   width: 29%;
   background: linear-gradient(-5deg, #fff0 76%, var(--luz2) calc(76% + 1px)),
     var(--luz1);
 }
-.floor.two .side:nth-of-type(3) span:before {
+.floor.two .side:nth-of-type(3) .span:before {
   width: 5vmin;
   bottom: 0.8vmin;
   top: inherit;
@@ -1020,14 +1020,14 @@ span {
   width: 29.25%;
 }
 
-.floor.three .side:nth-of-type(3) span {
+.floor.three .side:nth-of-type(3) .span {
   width: 69.5%;
   left: 0;
   background: #fff0;
 }
 
-.floor.three .side:nth-of-type(3) span:before,
-.floor.three .side:nth-of-type(3) span:after {
+.floor.three .side:nth-of-type(3) .span:before,
+.floor.three .side:nth-of-type(3) .span:after {
   content: "";
   position: absolute;
   width: 48.5%;
@@ -1041,7 +1041,7 @@ span {
     var(--luz1);
 }
 
-.floor.three .side:nth-of-type(3) span:after {
+.floor.three .side:nth-of-type(3) .span:after {
   left: 51%;
   background: linear-gradient(
       175.25deg,
@@ -1070,7 +1070,7 @@ span {
   box-shadow: none;
 }
 
-.floor.four .side:nth-of-type(3) span:before {
+.floor.four .side:nth-of-type(3) .span:before {
   content: "";
   position: absolute;
   width: 2vmin;
@@ -1085,7 +1085,7 @@ span {
   filter: drop-shadow(0px 2px 0px var(--luz2));
 }
 
-.floor.four .side:nth-of-type(3) span:after {
+.floor.four .side:nth-of-type(3) .span:after {
   content: "";
   position: absolute;
   width: 3.5vmin;
@@ -1126,8 +1126,8 @@ span {
     drop-shadow(25px -2px 0px var(--bush)) drop-shadow(25px 0px 0px var(--bush));
 }
 
-.floor.five .side:nth-of-type(3) span,
-.floor.seven .side:nth-of-type(3) span {
+.floor.five .side:nth-of-type(3) .span,
+.floor.seven .side:nth-of-type(3) .span {
   left: 0%;
   width: 33.5%;
   background: conic-gradient(
@@ -1137,7 +1137,7 @@ span {
   );
 }
 
-.floor.five .side:nth-of-type(3) span:before {
+.floor.five .side:nth-of-type(3) .span:before {
   display: none;
   left: 0%;
   bottom: 2vmin;
@@ -1189,7 +1189,7 @@ span {
   background-size: 1.85vmin 100%, 33vmin 100%;
 }
 
-.floor.eight .side:nth-of-type(3) span {
+.floor.eight .side:nth-of-type(3) .span {
   width: 66%;
   left: 36%;
   background: linear-gradient(32deg, #fff0 17%, var(--luz2) 19%), var(--luz1);
@@ -1213,8 +1213,8 @@ span {
   background-repeat: no-repeat;
 }
 
-.floor.eight .side:nth-of-type(3) span:before,
-.floor.eight .side:nth-of-type(3) span:after {
+.floor.eight .side:nth-of-type(3) .span:before,
+.floor.eight .side:nth-of-type(3) .span:after {
   content: "";
   position: absolute;
   width: 50.75%;
@@ -1227,7 +1227,7 @@ span {
   );
 }
 
-.floor.eight .side:nth-of-type(3) span:after {
+.floor.eight .side:nth-of-type(3) .span:after {
   content: "";
   position: absolute;
   width: 43%;
@@ -1755,7 +1755,7 @@ input#day-night:checked + label:after {
   opacity: 0.6;
 }
 
-.clouds span {
+.clouds .span {
   opacity: 0;
 }
 

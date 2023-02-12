@@ -1,26 +1,25 @@
 // Implementing Red-Black Tree in C
 
-// #include <stdio.h>
+//#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "rbt.h"
 
-enum nodeColor {
-  RED,
-  BLACK
-};
 
-struct rbNode {
-  int data;
-  enum nodeColor color;
-  struct rbNode *link[2];
-};
+//rbNode *root = NULL;
 
-struct rbNode *root = NULL;
+static	int		compare_payload		(payload_t p1, payload_t p2);
+//static	void	itoa				(int i, char *a, int n);
 
 // Create a red-black tree
-struct rbNode *createNode(int data) {
-  struct rbNode *newnode;
-  newnode = (struct rbNode *)malloc(sizeof(struct rbNode));
+rbNode *createNode(payload_t data) {
+  rbNode *newnode;
+  newnode = (rbNode *)malloc(sizeof(rbNode));
+  
+  // heap overflow
+  if (newnode == NULL)
+	  return NULL;
+
   newnode->data = data;
   newnode->color = RED;
   newnode->link[0] = newnode->link[1] = NULL;
@@ -28,28 +27,42 @@ struct rbNode *createNode(int data) {
 }
 
 // Insert an node
-void insertion(int data) {
-  struct rbNode *stack[98], *ptr, *newnode, *xPtr, *yPtr;
+rbNode* insertion(rbNode *root, payload_t data) {
+  rbNode *stack[98], *ptr, *newnode, *xPtr, *yPtr;
   int dir[98], ht = 0, index;
   ptr = root;
   if (!root) {
     root = createNode(data);
-    return;
+	  return root;
   }
 
   stack[ht] = root;
   dir[ht++] = 0;
   while (ptr != NULL) {
-    if (ptr->data == data) {
+	  index = compare_payload(data, ptr->data);
+	  if (index == MEMORY_INSUFFICIENT) {
+		  //printf("dangern");
+		  return NULL;
+	  }
+/*     if (compare_payload(ptr->data, data) == 0) {
 //       printf("Duplicates Not Allowed!!\n");
       return;
     }
-    index = (data - ptr->data) > 0 ? 1 : 0;
+//     index = (data - ptr->data) > 0 ? 1 : 0; */
+	  if (index == 0) {
+		  //printf("erooor\n");
+		  return root;
+	  }
+	  index = index < 0 ? 0 : 1;
     stack[ht] = ptr;
     ptr = ptr->link[index];
     dir[ht++] = index;
   }
   stack[ht - 1]->link[index] = newnode = createNode(data);
+  if (newnode == NULL) {
+	  //printf("dangerr\n");
+	  return NULL;
+  }
   while ((ht >= 3) && (stack[ht - 1]->color == RED)) {
     if (dir[ht - 2] == 0) {
       yPtr = stack[ht - 2]->link[1];
@@ -110,25 +123,32 @@ void insertion(int data) {
     }
   }
   root->color = BLACK;
+  return root;
 }
 
 // Delete a node
-void deletion(int data) {
-  struct rbNode *stack[98], *ptr, *xPtr, *yPtr;
-  struct rbNode *pPtr, *qPtr, *rPtr;
+rbNode* deletion(rbNode *root, payload_t data) {
+  rbNode *stack[98], *ptr, *xPtr, *yPtr;
+  rbNode *pPtr, *qPtr, *rPtr;
   int dir[98], ht = 0, diff, i;
-  enum nodeColor color;
+  nodeColor color;
 
   if (!root) {
 //     printf("Tree not available\n");
-    return;
+    return NULL;
   }
 
   ptr = root;
   while (ptr != NULL) {
-    if ((data - ptr->data) == 0)
+	  diff = compare_payload(data, ptr->data);
+	  if (diff == MEMORY_INSUFFICIENT)
+		  return NULL;
+/*     if ((data - ptr->data) == 0)
       break;
-    diff = (data - ptr->data) > 0 ? 1 : 0;
+    diff = (data - ptr->data) > 0 ? 1 : 0; */
+	  if (diff == 0)
+		  break;
+	  diff = diff < 0 ? 0: 1;
     stack[ht] = ptr;
     dir[ht++] = diff;
     ptr = ptr->link[diff];
@@ -192,7 +212,7 @@ void deletion(int data) {
   }
 
   if (ht < 1)
-    return;
+    return root;
 
   if (ptr->color == BLACK) {
     while (1) {
@@ -305,39 +325,46 @@ void deletion(int data) {
       ht--;
     }
   }
+
+  return root;
 }
 
 
 /* 
 // Print the inorder traversal of the tree
-void inorderTraversal(struct rbNode *node) {
+void inorderTraversal(rbNode *node) {
   if (node) {
     inorderTraversal(node->link[0]);
-    printf("%d  ", node->data);
+    printf("%d  ", node->data.id);
     inorderTraversal(node->link[1]);
   }
   return;
-} */
+}
 
-/* 
+
 // Driver code
 int main() {
-  int ch, data;
+	rbNode *root = NULL;
+  int ch;
   while (1) {
     printf("1. Insertion\t2. Deletion\n");
     printf("3. Traverse\t4. Exit");
     printf("\nEnter your choice:");
     scanf("%d", &ch);
+	payload_t data;
+	data.time = 99;
+	data.status = true;
     switch (ch) {
       case 1:
         printf("Enter the element to insert:");
-        scanf("%d", &data);
-        insertion(data);
+        scanf("%d", &data.id);
+		root = insertion(root, data);
+        printf("result of insertion: %d\n", (root == NULL ? 0 : root->data.id));
         break;
       case 2:
         printf("Enter the element to delete:");
-        scanf("%d", &data);
-        deletion(data);
+        scanf("%d", &data.id);
+        root = deletion(root, data);
         break;
       case 3:
         inorderTraversal(root);
@@ -352,4 +379,60 @@ int main() {
     printf("\n");
   }
   return 0;
+}
+ */
+
+static int compare_payload (payload_t p1, payload_t p2) {
+	char *p1_id_s = (char *) malloc (69 * sizeof(char));
+	char *p1_time_s = (char *) malloc (33 * sizeof(char));
+	char *p2_id_s = (char *) malloc (69 * sizeof(char));
+	char *p2_time_s = (char *) malloc (33 * sizeof(char));
+
+	// heap overflow
+	if (p1_id_s == NULL || p1_time_s == NULL || p2_id_s == NULL || p2_time_s == NULL)
+		return MEMORY_INSUFFICIENT;
+
+/* 	itoa(p1.id, p1_id_s, 10);
+	itoa(p1.time, p1_time_s, 10);
+	itoa(p2.id, p2_id_s, 10);
+	itoa(p2.time, p2_time_s, 10); */
+
+	p1_id_s = itoa(p1.id, p1_id_s, 10);
+	p1_time_s = itoa(p1.time, p1_time_s, 10);
+	p2_id_s = itoa(p2.id, p2_id_s, 10);
+	p2_time_s = itoa(p2.time, p2_time_s, 10);
+
+//	printf("p1id %s, p1time %s, p2id %s, p2time %s\n", p1_id_s, p1_time_s, p2_id_s, p2_time_s);
+
+	char *s1 = strncat(p1_id_s, p1_time_s, 33);
+	char *s2 = strncat(p2_id_s, p2_time_s, 33);
+
+	int result =  strncmp(s1, s2, 69);
+
+//	printf("%s - %s, result: %d\n", s1, s2, result);
+
+	free(p1_id_s);
+	free(p1_time_s);
+	free(p2_id_s);
+	free(p2_time_s);
+
+	return result;
+}
+
+
+// custom version where compiler doesn't recognise itoa, 'n' is not base it is max length of string 'a'.
+/* static void itoa (int i, char *a, int n) {
+	memset(a, 0, n*sizeof(char));
+
+	int d = 0;
+	while (i) {
+		a[d++] = (i%10)+'0';
+		i /= 10;
+	}
+
+	int s = 0, e = d-1;
+	while (s < e) {
+		swap(a[s], a[e]);
+		s++; e--;
+	}
 } */
