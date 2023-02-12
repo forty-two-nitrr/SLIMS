@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import mapboxgl from "mapbox-gl";
+import LeftSide from "./LeftSide";
 import axios from "axios";
 import "./Map.css";
 
@@ -13,6 +14,7 @@ const Map = () => {
   const [lat, setLat] = useState(21.2494);
   const [zoom, setZoom] = useState(18);
   const [locations, setLocations] = useState([]);
+  const [id, setId] = useState(0);
 
   useEffect(() => {
     axios
@@ -33,9 +35,11 @@ const Map = () => {
   });
 
   useEffect(() => {
-    console.log(locations);
+    if (locations.size === 0) return;
     locations.forEach((location) => {
-      const marker = new mapboxgl.Marker({ color: "red" })
+      const marker = new mapboxgl.Marker({
+        color: location.status ? "blue" : "grey",
+      })
         .setLngLat([location.longitude, location.latitude])
         .setPopup(
           new mapboxgl.Popup({
@@ -51,7 +55,7 @@ const Map = () => {
         marker.togglePopup();
       });
       marker.getElement().addEventListener("click", () => {
-        console.log(location.id);
+        setId(location.id);
       });
     });
   }, [locations]);
@@ -75,7 +79,9 @@ const Map = () => {
           <div ref={mapContainer} className="map" />
         </div>
       </div>
-      <div className="details-container"></div>
+      <div className="details-container">
+        <LeftSide id={id} />
+      </div>
     </div>
   );
 };
