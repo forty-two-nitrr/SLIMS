@@ -8,7 +8,7 @@ import time
 
 DETECTED = True
 
-SOCKET_HOST = '192.168.246.97'
+SOCKET_HOST = '192.168.201.97'
 SOCKET_PORT = 6969
 
 class Command(BaseCommand):
@@ -51,12 +51,12 @@ class Command(BaseCommand):
             cv2.imshow('frame', frame)
             
             if len(results.xyxy[0]) == 0:
-                if status == DETECTED and time.time() - curr_time > 5:
+                if status == DETECTED and time.time() - curr_time > 30:
                     r = requests.get(url = url+'/toggle')
                     curr_time = time.time()
                     status = not DETECTED
             else:
-                if status == (not DETECTED) and time.time() - curr_time > 5:
+                if status == (not DETECTED) and time.time() - curr_time > 30:
                     r = requests.get(url = url+'/toggle')
                     curr_time = time.time()
                     status = DETECTED
