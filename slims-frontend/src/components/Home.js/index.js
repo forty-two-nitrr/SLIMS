@@ -1,25 +1,241 @@
-import React, { useCallback } from "react";
+import React from "react";
 import Typewriter from "typewriter-effect";
-import { Fade } from "react-awesome-reveal";
-import Particles from "react-tsparticles";
-import { loadFull } from "tsparticles";
-import config from "./config";
+// import { Fade } from "react-awesome-reveal";
+// import Particles from "react-tsparticles";
+// import { loadFull } from "tsparticles";
+// import config from "./config";
 import { Link } from "react-router-dom";
 import "./Home.css";
 
 const Home = () => {
-  const particlesInit = useCallback(async (engine) => {
-    console.log(engine);
-    await loadFull(engine);
-  }, []);
+  //   const particlesInit = useCallback(async (engine) => {
+  //     console.log(engine);
+  //     await loadFull(engine);
+  //   }, []);
 
-  const particlesLoaded = useCallback(async (container) => {
-    await console.log(container);
-  }, []);
+  //   const particlesLoaded = useCallback(async (container) => {
+  //     await console.log(container);
+  //   }, []);
+
+  const onAndOffLights = (flag) => {
+    var lights = document.querySelectorAll("#socket");
+    if (!flag) {
+      lights.forEach((light) => {
+        light.classList.add("flicker");
+      });
+    } else {
+      lights.forEach((light) => {
+        light.classList.remove("flicker");
+      });
+    }
+  };
 
   return (
-    <div className="conatiner-home">
-      <div className="left-text">
+    <div>
+      <input
+        type="checkbox"
+        id="day-night"
+        onChange={(e) => onAndOffLights(e.currentTarget.checked)}
+      />
+      <label for="day-night"></label>
+
+      <div className="content">
+        <div className="moon-sun"></div>
+
+        <div className="cuboid floor one">
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+        </div>
+        <div className="cuboid roof one">
+          <div className="side">
+            <i className="cactus"></i>
+          </div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+        </div>
+        <div className="cuboid floor two">
+          <div className="side">
+            <span className="span">
+              <i className="flowers"></i>
+            </span>
+          </div>
+          <div className="side"></div>
+          <div className="side">
+            <span className="span"></span>
+          </div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+        </div>
+        <div className="cuboid roof two">
+          <div className="side">
+            <i className="bush"></i>
+          </div>
+          <div className="side"></div>
+          <div className="side">
+            <i className="bush"></i>
+          </div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+        </div>
+        <div className="cuboid floor three">
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side">
+            <span className="span"></span>
+          </div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+        </div>
+        <div className="cuboid roof three">
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+        </div>
+        <div className="cuboid floor four">
+          <div className="side">
+            <i className="man"></i>
+          </div>
+          <div className="side"></div>
+          <div className="side">
+            <span className="span"></span>
+          </div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+        </div>
+        <div className="cuboid roof four">
+          <div className="side">
+            <i className="bush"></i>
+          </div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+        </div>
+        <div className="cuboid floor five">
+          <div className="side">
+            <i className="cactus2"></i>
+            <i className="cactus2"></i>
+            <span className="span"></span>
+          </div>
+          <div className="side"></div>
+          <div className="side">
+            <span className="span"></span>
+          </div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+        </div>
+        <div className="cuboid roof five">
+          <div className="side">
+            <i className="cactus"></i>
+          </div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+        </div>
+        <div className="cuboid floor six">
+          <div className="side">
+            <span className="span">
+              <i className="cat"></i>
+              <i className="cat"></i>
+            </span>
+          </div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+        </div>
+        <div className="cuboid roof six">
+          <div className="side">
+            <i className="bush"></i>
+          </div>
+          <div className="side"></div>
+          <div className="side">
+            <i className="cactus"></i>
+          </div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+        </div>
+        <div className="cuboid floor seven">
+          <div className="side">
+            <i className="plant"></i>
+          </div>
+          <div className="side"></div>
+          <div className="side">
+            <span className="span"></span>
+          </div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+        </div>
+        <div className="cuboid roof seven">
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+        </div>
+        <div className="cuboid floor eight">
+          <div className="side">
+            <i className="plant"></i>
+            <i className="man"></i>
+          </div>
+          <div className="side"></div>
+          <div className="side">
+            <span className="span"></span>
+          </div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+        </div>
+        <div className="cuboid roof eight">
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+        </div>
+        <div className="cuboid air-cooler">
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+        </div>
+        <div className="cuboid air-cooler">
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+          <div className="side"></div>
+        </div>
+        <div className="lights"></div>
+        <div className="clouds"></div>
+      </div>
+      {/* <div className="left-text">
         <Particles
           id="tsparticles"
           init={particlesInit}
@@ -50,27 +266,41 @@ const Home = () => {
             </Link>
           </div>
         </Fade>
+      </div> */}
+      <div className="main_head">SLIMS.</div>
+      <div className="main_desc">
+        street light infrastructure management system.
       </div>
+      <div className="main_btn">
+        <div className="wrap_x">
+          <button className="button_n">
+            <Link to="/map" style={{ textDecoration: "none", color: "#000" }}>
+              EXPLORE!
+            </Link>
+          </button>
+        </div>
+      </div>
+
       <div className="right-image">
         <div className="lamp" id="short-1">
           <div id="post"></div>
           <div id="curve"></div>
-          <div id="socket"></div>
+          <div id="socket" className="flicker"></div>
         </div>
         <div className="lamp" id="tall-1">
           <div id="post"></div>
           <div id="curve"></div>
-          <div id="socket"></div>
+          <div id="socket" className="flicker"></div>
         </div>
         <div className="lamp" id="short-2">
           <div id="post"></div>
           <div id="curve"></div>
-          <div id="socket"></div>
+          <div id="socket" className="flicker"></div>
         </div>
         <div className="lamp" id="tall-2">
           <div id="post"></div>
           <div id="curve"></div>
-          <div id="socket"></div>
+          <div id="socket" className="flicker"></div>
         </div>
       </div>
     </div>
