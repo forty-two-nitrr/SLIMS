@@ -1,29 +1,38 @@
 #include "esp_camera.h"
 #include <WiFi.h>
-#define CAMERA_MODEL_AI_THINKER // Has PSRAM
+#define CAMERA_MODEL_AI_THINKER  // Has PSRAM
 #include "camera_pins.h"
 #include <WebServer.h>
 #include "toggle.h"
-
+#include <ArduinoJson.h>
+#include <HTTPClient.h>
 const char* ssid = "Aditya Ray";
 const char* password = "ankuria98";
+
 
 void startCameraServer();
 void setupLedFlash(int pin);
 
+WiFiClient client;
+HTTPClient http;
+
 WebServer server(80);
-IPAddress staticIP(192, 168, 246, 1);
+IPAddress staticIP(192, 168, 201, 1);
 IPAddress gateway(192, 168, 18, 1);
 IPAddress subnet(255, 255, 255, 0);
 IPAddress dns(101, 50, 101, 50);
 String header;
 void setup() {
+// pinMode(16,OUTPUT);
+
   Serial.begin(115200);
   Serial.setDebugOutput(true);
   Serial.println();
-  // if (WiFi.config(staticIP, gateway, subnet, dns, dns) == false) {
-  //   Serial.println("Configuration failed.");
-  // }
+  if (WiFi.config(staticIP, gateway, subnet, dns, dns) == false) {
+    Serial.println("Configuration failed.");
+  }
+
+
 
   camera_config_t config;
   config.ledc_channel = LEDC_CHANNEL_0;
@@ -46,27 +55,23 @@ void setup() {
   config.pin_reset = RESET_GPIO_NUM;
   config.xclk_freq_hz = 20000000;
   config.frame_size = FRAMESIZE_UXGA;
-  config.pixel_format = PIXFORMAT_JPEG; // for streaming
+  config.pixel_format = PIXFORMAT_JPEG;  // for streaming
   //config.pixel_format = PIXFORMAT_RGB565; // for face detection/recognition
   config.grab_mode = CAMERA_GRAB_WHEN_EMPTY;
   config.fb_location = CAMERA_FB_IN_PSRAM;
   config.jpeg_quality = 12;
   config.fb_count = 1;
-  
-  // if PSRAM IC present, init with UXGA resolution and higher JPEG quality
-  //                      for larger pre-allocated frame buffer.
-  if(config.pixel_format == PIXFORMAT_JPEG){
-    if(psramFound()){
+
+  if (config.pixel_format == PIXFORMAT_JPEG) {
+    if (psramFound()) {
       config.jpeg_quality = 10;
       config.fb_count = 2;
       config.grab_mode = CAMERA_GRAB_LATEST;
     } else {
-      // Limit the frame size when PSRAM is not available
       config.frame_size = FRAMESIZE_SVGA;
       config.fb_location = CAMERA_FB_IN_DRAM;
     }
   } else {
-    // Best option for face detection/recognition
     config.frame_size = FRAMESIZE_240X240;
 #if CONFIG_IDF_TARGET_ESP32S3
     config.fb_count = 2;
@@ -85,15 +90,13 @@ void setup() {
     return;
   }
 
-  sensor_t * s = esp_camera_sensor_get();
-  // initial sensors are flipped vertically and colors are a bit saturated
+  sensor_t* s = esp_camera_sensor_get();
   if (s->id.PID == OV3660_PID) {
-    s->set_vflip(s, 1); // flip it back
-    s->set_brightness(s, 1); // up the brightness just a bit
-    s->set_saturation(s, -2); // lower the saturation
+    s->set_vflip(s, 1);        
+    s->set_brightness(s, 1);   
+    s->set_saturation(s, -2);  
   }
-  // drop down frame size for higher initial frame rate
-  if(config.pixel_format == PIXFORMAT_JPEG){
+  if (config.pixel_format == PIXFORMAT_JPEG) {
     s->set_framesize(s, FRAMESIZE_QVGA);
   }
 
@@ -106,7 +109,6 @@ void setup() {
   s->set_vflip(s, 1);
 #endif
 
-// Setup LED FLash if LED pin is defined in camera_pins.h
 #if defined(LED_GPIO_NUM)
   setupLedFlash(LED_GPIO_NUM);
 #endif
@@ -129,15 +131,59 @@ void setup() {
 }
 
 void loop() {
-  // Do nothing. Everything is done in another task by the web server
-  delay(10000);
+
+  String serverUrl = "http://192.168.201.97:8000/tracker/lights/";
+  String powerUrl = "http://192.168.201.97:8000/tracker/poles/";
+  http.begin(client, serverUrl);
+
+  DynamicJsonDocument doc(2048);
+  doc["id"] = 10;
+  doc["latitude"] = "3.8687";
+  doc["longitude"] = "7.7988";
+  doc["pincode"] = "490006";
+  doc["uptime"] = "10"; 
+  doc["status"] = true;
+
+  String body;
+  serializeJson(doc, body);
+  Serial.println("POST body: " + body);
+
+  http.addHeader("Content-Type", "application/json");
+  int httpResponseCode = http.POST(body);
+  Serial.print("HTTP Response code: ");
+  Serial.println(httpResponseCode);
+  http.end();
+
+  http.begin(client, powerUrl);
+  DynamicJsonDocument doc1(2048);
+  doc1["id"] = 10;
+  doc1["power"] = "3.86";
+
+
+  String body1;
+  serializeJson(doc1, body1);
+  Serial.println("POST body: " + body1);
+
+  http.addHeader("Content-Type", "application/json");
+  int httpResponseCode1 = http.POST(body1);
+  Serial.print("HTTP Response code: ");
+  Serial.println(httpResponseCode1);
+  http.end();
+  delay(1000);
 }
 
+// bool ledCondition=false;
+esp_err_t toggle_handler(httpd_req_t* req) {
+// ledCondition=!ledCondition;
 
-esp_err_t toggle_handler(httpd_req_t *req)
-{
-  Serial.print("jai ganesha\n");
+//   if(ledCondition){
+//  digitalWrite(16,HIGH);    
+//   }else{
+//      digitalWrite(16,LOW);
+//   }
+  Serial.print("turn on led\n");
   static char json_response[1024];
-  int x = sprintf(json_response, "hagdu pugdu\n");
-    return httpd_resp_send(req, json_response, 0);
+  int x = sprintf(json_response, "error\n");
+  
+  return httpd_resp_send(req, json_response, 0);
 }

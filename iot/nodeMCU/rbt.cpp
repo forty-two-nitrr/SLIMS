@@ -1,26 +1,19 @@
-// Implementing Red-Black Tree in C
-
-// #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "rbt.h"
 
-enum nodeColor {
-  RED,
-  BLACK
-};
 
-struct rbNode {
-  int data;
-  enum nodeColor color;
-  struct rbNode *link[2];
-};
-
-struct rbNode *root = NULL;
+static	int		compare_payload		(payload_t p1, payload_t p2);
 
 // Create a red-black tree
-struct rbNode *createNode(int data) {
-  struct rbNode *newnode;
-  newnode = (struct rbNode *)malloc(sizeof(struct rbNode));
+rbNode *createNode(payload_t data) {
+  rbNode *newnode;
+  newnode = (rbNode *)malloc(sizeof(rbNode));
+  
+  // heap overflow
+  if (newnode == NULL)
+	  return NULL;
+
   newnode->data = data;
   newnode->color = RED;
   newnode->link[0] = newnode->link[1] = NULL;
@@ -28,28 +21,35 @@ struct rbNode *createNode(int data) {
 }
 
 // Insert an node
-void insertion(int data) {
-  struct rbNode *stack[98], *ptr, *newnode, *xPtr, *yPtr;
+rbNode* insertion(rbNode *root, payload_t data) {
+  rbNode *stack[98], *ptr, *newnode, *xPtr, *yPtr;
   int dir[98], ht = 0, index;
   ptr = root;
   if (!root) {
     root = createNode(data);
-    return;
+	  return root;
   }
 
   stack[ht] = root;
   dir[ht++] = 0;
   while (ptr != NULL) {
-    if (ptr->data == data) {
-//       printf("Duplicates Not Allowed!!\n");
-      return;
-    }
-    index = (data - ptr->data) > 0 ? 1 : 0;
+	  index = compare_payload(data, ptr->data);
+	  if (index == MEMORY_INSUFFICIENT) {
+		  return NULL;
+	  }
+
+	  if (index == 0) {
+		  return root;
+	  }
+	  index = index < 0 ? 0 : 1;
     stack[ht] = ptr;
     ptr = ptr->link[index];
     dir[ht++] = index;
   }
   stack[ht - 1]->link[index] = newnode = createNode(data);
+  if (newnode == NULL) {
+	  return NULL;
+  }
   while ((ht >= 3) && (stack[ht - 1]->color == RED)) {
     if (dir[ht - 2] == 0) {
       yPtr = stack[ht - 2]->link[1];
@@ -110,25 +110,28 @@ void insertion(int data) {
     }
   }
   root->color = BLACK;
+  return root;
 }
 
 // Delete a node
-void deletion(int data) {
-  struct rbNode *stack[98], *ptr, *xPtr, *yPtr;
-  struct rbNode *pPtr, *qPtr, *rPtr;
+rbNode* deletion(rbNode *root, payload_t data) {
+  rbNode *stack[98], *ptr, *xPtr, *yPtr;
+  rbNode *pPtr, *qPtr, *rPtr;
   int dir[98], ht = 0, diff, i;
-  enum nodeColor color;
+  nodeColor color;
 
   if (!root) {
-//     printf("Tree not available\n");
-    return;
+    return NULL;
   }
 
   ptr = root;
   while (ptr != NULL) {
-    if ((data - ptr->data) == 0)
-      break;
-    diff = (data - ptr->data) > 0 ? 1 : 0;
+	  diff = compare_payload(data, ptr->data);
+	  if (diff == MEMORY_INSUFFICIENT)
+		  return NULL;
+	  if (diff == 0)
+		  break;
+	  diff = diff < 0 ? 0: 1;
     stack[ht] = ptr;
     dir[ht++] = diff;
     ptr = ptr->link[diff];
@@ -192,7 +195,7 @@ void deletion(int data) {
   }
 
   if (ht < 1)
-    return;
+    return root;
 
   if (ptr->color == BLACK) {
     while (1) {
@@ -305,51 +308,35 @@ void deletion(int data) {
       ht--;
     }
   }
+
+  return root;
 }
 
 
-/* 
-// Print the inorder traversal of the tree
-void inorderTraversal(struct rbNode *node) {
-  if (node) {
-    inorderTraversal(node->link[0]);
-    printf("%d  ", node->data);
-    inorderTraversal(node->link[1]);
-  }
-  return;
-} */
+static int compare_payload (payload_t p1, payload_t p2) {
+	char *p1_id_s = (char *) malloc (69 * sizeof(char));
+	char *p1_time_s = (char *) malloc (33 * sizeof(char));
+	char *p2_id_s = (char *) malloc (69 * sizeof(char));
+	char *p2_time_s = (char *) malloc (33 * sizeof(char));
 
-/* 
-// Driver code
-int main() {
-  int ch, data;
-  while (1) {
-    printf("1. Insertion\t2. Deletion\n");
-    printf("3. Traverse\t4. Exit");
-    printf("\nEnter your choice:");
-    scanf("%d", &ch);
-    switch (ch) {
-      case 1:
-        printf("Enter the element to insert:");
-        scanf("%d", &data);
-        insertion(data);
-        break;
-      case 2:
-        printf("Enter the element to delete:");
-        scanf("%d", &data);
-        deletion(data);
-        break;
-      case 3:
-        inorderTraversal(root);
-        printf("\n");
-        break;
-      case 4:
-        exit(0);
-      default:
-        printf("Not available\n");
-        break;
-    }
-    printf("\n");
-  }
-  return 0;
-} */
+	// heap overflow
+	if (p1_id_s == NULL || p1_time_s == NULL || p2_id_s == NULL || p2_time_s == NULL)
+		return MEMORY_INSUFFICIENT;
+
+	p1_id_s = itoa(p1.id, p1_id_s, 10);
+	p1_time_s = itoa(p1.time, p1_time_s, 10);
+	p2_id_s = itoa(p2.id, p2_id_s, 10);
+	p2_time_s = itoa(p2.time, p2_time_s, 10);
+
+	char *s1 = strncat(p1_id_s, p1_time_s, 33);
+	char *s2 = strncat(p2_id_s, p2_time_s, 33);
+
+	int result =  strncmp(s1, s2, 69);
+
+	free(p1_id_s);
+	free(p1_time_s);
+	free(p2_id_s);
+	free(p2_time_s);
+
+	return result;
+}
