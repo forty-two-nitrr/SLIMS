@@ -16,7 +16,7 @@ const LeftSide = ({ id }) => {
   useEffect(() => {
     if (id === 0) return;
     axios
-      .get("http://192.168.201.97:8000/tracker/lights/?id=" + id)
+      .get("http://192.168.172.97:8000/tracker/lights/?id=" + id)
       .then((res) => {
         setDetails(res.data.data);
         console.log(res.data.data);

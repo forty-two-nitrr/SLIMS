@@ -18,7 +18,7 @@ const Map = () => {
 
   useEffect(() => {
     axios
-      .get("http://192.168.201.97:8000/tracker/lights/")
+      .get("http://192.168.172.97:8000/tracker/lights/")
       .then((res) => setLocations(res.data.data))
       .catch((err) => console.log(err.response));
   }, []);
